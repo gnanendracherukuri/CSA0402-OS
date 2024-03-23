@@ -1,0 +1,132 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Process {
+    int pid;
+    char name[20];
+    int priority;
+    int suspended;
+} Process;
+
+typedef struct PCB {
+    Process process;
+    int state;
+} PCB;
+
+void create_process(Process process) {
+    PCB pcb;
+    pcb.process = process;
+    pcb.state = 0;
+}
+
+void destroy_process(int pid) {
+}
+
+void suspend_process(int pid) {
+}
+
+void resume_process(int pid) {
+}
+
+void wait_for_process(int pid) {
+}
+
+void exit_process() {
+}
+
+void* allocate_memory(size_t size) {
+    return malloc(size);
+}
+
+void free_memory(void* ptr) {
+    free(ptr);
+}
+
+void read_file(char* filename) {
+    printf("Reading file: %s\n", filename);
+}
+
+void write_file(char* filename, char* data) {
+    printf("Writing data to file: %s\n", filename);
+    printf("Data: %s\n", data);
+}
+
+void create_directory(char* dirname) {
+    printf("Creating directory: %s\n", dirname);
+}
+
+void delete_file(char* filename) {
+    printf("Deleting file: %s\n", filename);
+}
+
+void change_directory(char* dirname) {
+    printf("Changing directory to: %s\n", dirname);
+}
+
+void handle_signal(int signal) {
+}
+
+void system_call_handler(int syscall_num, void* args) {
+    switch (syscall_num) {
+        case 1:
+            create_process((Process)args);
+            break;
+        case 2:
+            destroy_process((int)args);
+            break;
+        case 3:
+            suspend_process((int)args);
+            break;
+        case 4:
+            resume_process((int)args);
+            break;
+        case 5:
+            wait_for_process((int)args);
+            break;
+        case 6:
+            exit_process();
+            break;
+        case 7:
+            read_file((char*)args);
+            break;
+        case 8:
+            write_file(((char*)args)[0], ((char*)args)[1]);
+            break;
+        case 9:
+            create_directory((char*)args);
+            break;
+        case 10:
+            delete_file((char*)args);
+            break;
+        case 11:
+            change_directory((char*)args);
+            break;
+        case 12:
+            handle_signal((int)args);
+            break;
+        default:
+            printf("Unknown system call\n");
+    }
+}
+
+void kernel_main() {
+    int num_iterations = 10;  
+    int i;
+    for (i = 0; i < num_iterations; i++) {
+        Process process = {100, "Process1", 1, 0};
+        system_call_handler(1, (void*)&process);
+        char* args[2] = {"example.txt", "Hello, World!"};
+        system_call_handler(8, (void*)args);
+        system_call_handler(9, (void*)"test");
+        system_call_handler(10, (void*)"example.txt");
+        system_call_handler(11, (void*)"test");
+        int signal = 2;
+        system_call_handler(12, (void*)&signal);
+    }
+}
+
+int main() {
+    kernel_main();
+    return 0;
+}
